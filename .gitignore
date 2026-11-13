@@ -5,5 +5,11 @@ test-results/
 playwright-report/
 prepare.cjs
 *.log
+tools/downloads/
+tools/bin/
+native/.godot/
+native/build/
+native/export_presets.cfg
+native/test-output/
 
 .vercel

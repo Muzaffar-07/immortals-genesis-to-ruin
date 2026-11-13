@@ -1,8 +1,12 @@
 # Immortals: Genesis to Ruin — Nightfall
 
-A free, open-source browser survival-action game about Aro and Ena, two immortals who journey from the first morning to the end of creation—and back again.
+A free, open-source survival-action game about Aro and Ena, two immortals who journey from the first morning to the end of creation—and back again. Available as a **downloadable Godot PC alpha** and a browser prototype.
 
-**[Play the game](https://immortals-genesis-to-ruin.vercel.app)** · [Source on GitHub](https://github.com/Muzaffar-07/immortals-genesis-to-ruin)
+**[Download the Windows PC alpha](https://github.com/Muzaffar-07/immortals-genesis-to-ruin/releases/tag/v0.3.0-pc-alpha)** · [Play the browser version](https://immortals-genesis-to-ruin.vercel.app) · [Source on GitHub](https://github.com/Muzaffar-07/immortals-genesis-to-ruin)
+
+The native version in [`native/`](native/README.md) has selectable Aro/Ena characters generated and rigged through Higgsfield, scanned PBR environmental assets, recorded spatial sound effects, six playable missions, third-person combat, dodging, chapter saves, and a mission journal. Open `native/project.godot` in Godot 4.7.2 to edit it. See the [native README](native/README.md) for controls, build instructions, tests and current limitations. This is an independent PC alpha with limited environments and animation, not a finished AAA or PS5 production.
+
+The following sections describe the **browser version**.
 
 Nightfall adds 3D playable environments at 1920 × 1080, animated skinned characters, shadowed terrain, atmospheric fog, weather, glowing particles, horror audio, optional blood and remains, and cinematic 2D interludes. All six chapters are available from the title screen. This is an independent browser prototype with stylized 3D visuals, not a photorealistic AAA or PS5 production.
 
