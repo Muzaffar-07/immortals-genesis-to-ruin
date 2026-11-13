@@ -2,6 +2,8 @@
 
 A free, open-source 2D browser action game about Aro and Ena, two immortals who journey from the first morning to the end of creation—and back again.
 
+**[Play the game](https://immortals-genesis-to-ruin.vercel.app)** · [Source on GitHub](https://github.com/Muzaffar-07/immortals-genesis-to-ruin)
+
 Six playable chapters feature procedural Canvas 2D art, dynamic lighting, bloom, particles, weather, cinematic space scenes, companion combat, rebirth, and a final boss. All chapters are available from the title screen.
 
 ## Play locally

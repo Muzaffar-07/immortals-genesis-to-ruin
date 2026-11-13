@@ -1,0 +1,7 @@
+node_modules
+test-results
+tests
+docs
+prepare.cjs
+.env*
+*.log
