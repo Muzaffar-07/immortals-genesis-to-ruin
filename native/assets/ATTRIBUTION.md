@@ -3,6 +3,42 @@
 The code is MIT licensed. Third-party assets retain their original licenses.
 No account or network connection is needed to play the packaged game.
 
+## The Glass Choir / industrial environment
+
+- Source: https://github.com/godotengine/tps-demo
+- Commit: `a82f15448e9b015440d3bbdf5e10801b260c4e9f`.
+- Art: Juan Linietsky and Fernando Miguel Calabró, CC BY 3.0.
+- Music: Christian Fernando Perucchi, CC BY 3.0.
+- Preserve `licenses/GODOT-TPS-LICENSE.md`, including GameTextures.com material credits.
+- Scenes/material paths rebased under `third_party/tps`; lighting/exposure changed;
+  new navigation, actors, objective placement and effects. Binary core material keeps
+  its original path alias under `level/textures/structure/Core`.
+- Reproduce the dependency copy with `tools/import-tps-assets.py`.
+
+## The Glass Choir / human cast
+
+- Generator: https://github.com/olatunde85/3d-gen, MIT, Josh Ola and contributors.
+- Downloaded main on 2026-11-13; upstream HEAD checked as
+  `3a9fca61fc1ea081a2d252fcdd588023d1c10587`.
+- MakeHuman base data: `a8bc2d54ff0ac92e78ff71431b1023eda42bf482`;
+  system assets: https://files.makehumancommunity.org/asset_packs/makehuman_system_assets/makehuman_system_assets_cc0.zip
+- Character data: CC0. Generator code/procedural animation: MIT. Locomotion and jump
+  include CMU motion capture under its separate terms (free use including commercial
+  games; no direct resale of the motion data). Preserve `licenses/ARA-ASSETS-LICENSE.txt`
+  and `licenses/ARA-MIT-LICENSE.txt`.
+- The data used in this project was obtained from mocap.cs.cmu.edu. The database was
+  created with funding from NSF EIA-0196217.
+- `assets/cast/*.json` contains the adult character parameters. Exported GLBs include
+  embedded textures, a game skeleton and selected combat/locomotion clips.
+- To reproduce: prepare Ara's source assets, copy `tools/generate-cast.ts` into Ara's
+  `scripts/`, then run `npx tsx scripts/generate-cast.ts <cast-output-directory>`.
+  On Windows, normalize both target-key `relative(...)` results in `build-assets.ts`
+  using `.replaceAll('\\', '/')` before removing the `.target` suffix. Otherwise
+  Ara's slash-based target names do not match Windows paths.
+- Protagonist clothing/colors and casting were customized; no real person's identity
+  or photographs were supplied. The old Higgsfield characters below belong to the
+  retained legacy prototype, not the new mission.
+
 ## Powered by Poly Haven
 
 - `terrain/ground_*`: **forest_ground_04**, 2K diffuse, OpenGL normal and roughness maps.

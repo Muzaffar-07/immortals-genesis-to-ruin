@@ -1,0 +1,3 @@
+https://github.com/godotengine/tps-demo
+Commit: a82f15448e9b015440d3bbdf5e10801b260c4e9f
+Paths rebased to res://third_party/tps/. See licenses/GODOT-TPS-LICENSE.md.

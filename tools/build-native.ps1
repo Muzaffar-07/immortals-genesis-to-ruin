@@ -5,7 +5,7 @@ param(
 $ErrorActionPreference = 'Stop'
 $projectPath = (Resolve-Path "$PSScriptRoot/../native").Path
 $templatePath = (Resolve-Path $Template).Path.Replace('\','/')
-$outputPath = Join-Path $projectPath 'build/Immortals-Nightfall'
+$outputPath = Join-Path $projectPath 'build/Immortals-Glass-Choir'
 New-Item -ItemType Directory -Force $outputPath | Out-Null
 $preset = @"
 [preset.0]
@@ -16,7 +16,7 @@ advanced_options=false
 export_filter="all_resources"
 include_filter=""
 exclude_filter="test-output/*,build/*,*.log"
-export_path="build/Immortals-Nightfall/Immortals.exe"
+export_path="build/Immortals-Glass-Choir/Immortals.exe"
 encryption_include_filters=""
 encryption_exclude_filters=""
 encrypt_pck=false
@@ -40,6 +40,6 @@ Get-ChildItem -LiteralPath "$projectPath/licenses" -File | ForEach-Object {
     Copy-Item -LiteralPath $_.FullName -Destination "$outputPath/licenses" -Force
 }
 Copy-Item -LiteralPath "$projectPath/Launch-Compatibility.cmd" -Destination $outputPath -Force
-$zipPath = Join-Path $projectPath 'build/Immortals-Nightfall-Windows-x64.zip'
+$zipPath = Join-Path $projectPath 'build/Immortals-Glass-Choir-Windows-x64.zip'
 Compress-Archive -Path "$outputPath/*" -DestinationPath $zipPath -Force
 Get-FileHash -LiteralPath $zipPath -Algorithm SHA256

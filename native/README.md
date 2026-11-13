@@ -1,86 +1,86 @@
-# Immortals: Nightfall — native PC alpha
+# Immortals: The Glass Choir
 
-A downloadable single-player Godot game following Aro and Ena through six ages.
-This version adds original textured and rigged male/female characters generated
-with Higgsfield, scanned PBR terrain and environmental props, third-person camera,
-recorded positional sound effects, combat and dodging, optional blood, mission
-journal, and chapter checkpoints. It is an early independent PC alpha, not a
-finished AAA game or PlayStation release.
-
-![Native character selection](../docs/native-title.png)
+A downloadable Godot action thriller set inside Blackwater, a facility harvesting
+immortality. Play as adult alien immortals Ena or Aro, investigate human copies,
+rescue Dr. Mara Vale and confront Director Voss. This is a playable development
+slice, not a finished AAA game or a PlayStation release.
 
 ## Play
 
-Download `Immortals-Nightfall-Windows-x64.zip` from
-https://github.com/Muzaffar-07/immortals-genesis-to-ruin/releases/tag/v0.3.0-pc-alpha
-and extract the entire folder before running `Immortals.exe`. Keep `Immortals.pck`
-beside it. No installation, login, service, or internet connection is required.
-The executable is unsigned. Windows may show a publisher warning.
+[Download the Windows build](https://github.com/Muzaffar-07/immortals-genesis-to-ruin/releases/tag/v0.4.0-glass-choir).
+Extract the entire ZIP, then run `Immortals.exe`. Keep `Immortals.pck` beside it.
+No installation, login or internet connection is needed. The executable is unsigned.
 
-Windows x64; keyboard and mouse; Vulkan-capable graphics for the Forward+ renderer.
-`Launch-Compatibility.cmd` uses OpenGL 3.3 if Vulkan is unavailable. Full HD renders at 1920×1080; Performance renders the 3D
-scene at roughly 1280×720. A GTX 1650 Ti was used for rendering checks; this is not
-a broad hardware benchmark or a guaranteed frame rate. Fullscreen is in Settings.
+Windows x64, keyboard and mouse, Vulkan graphics. The compatibility launcher uses
+OpenGL with reduced effects. Full HD is the default 1920×1080 rendering resolution;
+Performance uses a lower 3D resolution, while 4K supersampling renders the 3D scene
+at 3840×2160 and scales it to the viewport. This does not make every source texture
+4K. A GTX 1650 Ti was used for visual checks, not a broad hardware benchmark.
 
 | Input | Action |
 |---|---|
 | WASD / mouse | Move / look |
-| Shift / Space | Sprint / invulnerable dodge |
-| Left click | Aim-assisted energy strike (28 m range) |
-| F | Communion: area damage and healing, when charged |
-| E | Collect, activate, or exit |
-| M / Escape | Mission journal / pause |
+| Shift / C | Sprint / jump |
+| Left click | Three-step combo: punches, front kick, roundhouse |
+| Right click | Block; press within 0.2 s of impact for a perfect parry |
+| Space | Evade with a brief invulnerability window |
+| Tab | Lock nearest visible target |
+| Q | Blink strike: 16 m range, 5 s cooldown, stamina cost |
+| R | Gravity pull: 9 m range, 9 s cooldown, resonance cost |
+| F | Time fracture: slow enemies for 6 s when resonance is full |
+| E | Investigate, converse, use freight lift or extract |
+| M / Escape | Evidence journal / pause |
 
-An orange ring warns of an attack. Dodge out before it lands. Killing enemies
-and recovering objectives restore some health. Communion regenerates and charges
-with successful strikes. Both protagonists have identical gameplay statistics.
-Difficulty changes incoming damage. Blood can be disabled in Settings.
+Watch orange windups. Blocks consume stamina; perfect parries stagger the attacker.
+Successful strikes build resonance. Kills restore some vitality. Blood effects can
+be disabled. Both heroes have equal combat statistics.
 
-## Campaign
+## Mission
 
-1. **First Breath**: recover three fragments and survive two assaults.
-2. **The First Flame**: recover flint and deadwood, ignite a hearth, defend it for 75 seconds.
-3. **The Long Ages**: activate and protect the Beacon through three assaults.
-4. **Earthfall**: sabotage three pylons and defeat the response force.
-5. **The Dying Stars**: recover seven seeds and escape a meteor storm in 180 seconds.
-6. **The End of Making**: defeat the Unmaking's three forms and open the time door.
+1. **Afterimage** — investigate a recorder carrying your own voice.
+2. **Cut the Lights** — descend to Security, defeat guards and disable the junction.
+3. **The Witness** — find Mara and decide whether to trust her with the console.
+4. **Clean Sweep** — survive a containment ambush; the witness choice changes its size.
+5. **The King's Lie** — broadcast the evidence or destroy the research archive.
+6. **The Glass Choir** — defeat Voss; preserving the archive leaves him stronger.
+7. **Daybreak** — extract and see the consequences of both decisions.
 
-All chapters can be selected from the title menu. Progress is stored in Godot's
-per-user application data directory (`nightfall-save.json`). Continue restarts
-the current chapter; there is no mid-mission snapshot.
+Freight lifts connect the three decks with short transitions. Checkpoints restart
+the current objective and restore choices, rather than snapshotting combat.
+Saves live in Godot's user application directory as `glass-choir.json`.
 
-## Run or edit the source
+## Development
 
-Import `project.godot` in Godot 4.7.2, then press F6/F5. Assets are bundled; an AI
-subscription is not needed. The engine can be obtained at https://godotengine.org/.
+Open `project.godot` in Godot 4.7.2. Bundled assets require no generation service.
 
 ```powershell
 godot --headless --path native --editor --import
-godot --headless --path native -- --smoke
+godot --headless --path native -- --cinematic-test
 godot --path native
 ```
 
-`--smoke` checks all six mission completion paths with both characters, character
-animation loading, health failure, sanctuary loss, timer failure, pause/resume,
-movement, aiming, dodge protection and Communion healing.
-It assists combat/objectives and does not establish balance. It never writes the
-player's save. `--capture` saves title and gameplay PNGs under `test-output/` and
-exits. Neither test mode is needed for normal play.
+The automated integration check covers both heroes, combat animations, timed combo
+damage, block/parry/evade, gravity and blink cooldowns, time fracture, dialogue button
+choices, ambush and boss consequences, both endings, pause, death and checkpoint retry.
+Story tests assist combat and relocate the player between objectives; they do not
+establish difficulty balance. `--cinematic-capture` renders title/gameplay/combat
+screenshots into `test-output/`. Test modes do not overwrite player saves.
 
-For a Windows export, install matching Godot export templates. The build script
-`../tools/build-native.ps1` can use the official Windows release template in
-`../tools/bin/windows_release_x86_64.exe`. It writes an ignored local export
-preset and packages the executable, data file and license notices under `build/`.
+`tools/build-native.ps1` exports Windows, packages the executable and data, copies
+credits/licenses and prints a SHA256 checksum. Matching Godot export templates are
+required. Build output and tools/downloads are ignored by git.
 
-## Known alpha limitations
+The former six-arena prototype remains accessible through `main.tscn` for reference.
+The browser prototype is a separate game in `public/`.
 
-- Small arena environments with repeated props; no open-world traversal.
-- Limited animation set; energy combat, no motion-captured melee choreography.
-- Recorded foley plus pitched bell ambience; no dialogue or original score.
-- Generated characters need further artist cleanup; enemies reuse corrupted rigs.
-- No multiplayer, controller input, remappable keys, or console certification.
-- Horror blood effects are stylized; no dismemberment system.
+## Open-source sources and limitations
 
-Contributions to animation, environmental art, enemy variety, accessibility,
-missions and performance are welcome. Code is MIT. Preserve the asset licenses
-and provenance in [assets/ATTRIBUTION.md](assets/ATTRIBUTION.md).
+Game code: MIT. Environment and music: Godot TPS Demo, CC BY 3.0 with the full
+notice in `licenses/GODOT-TPS-LICENSE.md`. Characters use the MIT Ara 3D Gen pipeline
+and CC0 MakeHuman data. Motion-capture locomotion retains CMU's terms and credit.
+Kenney sound effects are CC0. See `assets/ATTRIBUTION.md` and `licenses/`.
+
+This build has one mission with linked stages, limited enemy tactics and keyframed
+combat animation. Conversations are text/subtitles, not recorded voice acting.
+There is no multiplayer, controller support, facial performance capture, destructible
+world, dismemberment system, console certification or guaranteed 4K frame rate.

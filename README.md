@@ -2,9 +2,11 @@
 
 A free, open-source survival-action game about Aro and Ena, two immortals who journey from the first morning to the end of creation—and back again. Available as a **downloadable Godot PC alpha** and a browser prototype.
 
-**[Download the Windows PC alpha](https://github.com/Muzaffar-07/immortals-genesis-to-ruin/releases/tag/v0.3.0-pc-alpha)** · [Play the browser version](https://immortals-genesis-to-ruin.vercel.app) · [Source on GitHub](https://github.com/Muzaffar-07/immortals-genesis-to-ruin)
+**[Download The Glass Choir for Windows](https://github.com/Muzaffar-07/immortals-genesis-to-ruin/releases/tag/v0.4.0-glass-choir)** · [Play the browser prototype](https://immortals-genesis-to-ruin.vercel.app) · [Source on GitHub](https://github.com/Muzaffar-07/immortals-genesis-to-ruin)
 
-The native version in [`native/`](native/README.md) has selectable Aro/Ena characters generated and rigged through Higgsfield, scanned PBR environmental assets, recorded spatial sound effects, six playable missions, third-person combat, dodging, chapter saves, and a mission journal. Open `native/project.godot` in Godot 4.7.2 to edit it. See the [native README](native/README.md) for controls, build instructions, tests and current limitations. This is an independent PC alpha with limited environments and animation, not a finished AAA or PS5 production.
+The native version, **The Glass Choir**, follows Aro or Ena into Blackwater: an industrial facility harvesting immortality. It includes rigged human characters, animated combos, parries, blink strikes, gravity pulls, time fracture, guards, a phased villain fight, evidence, conversations, consequential choices, checkpoints, recorded spatial sound and a score. The authored Godot TPS environment and MakeHuman/Ara character pipeline are credited under their original licenses. Full HD is the default; 4K supersampling is optional. Open `native/project.godot` in Godot 4.7.2. See the [native README](native/README.md) for controls, validation and limitations. This is a playable development slice, not a finished AAA or PS5 production.
+
+![The Glass Choir](docs/glass-choir-title.png)
 
 The following sections describe the **browser version**.
 
