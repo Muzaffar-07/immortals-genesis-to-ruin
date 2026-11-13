@@ -1,9 +1,18 @@
 {
   "name": "immortals-genesis-to-ruin",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "private": true,
   "description": "A six-chapter open-source browser action game",
   "license": "MIT",
-  "scripts": {"test": "node tests/smoke.cjs", "start": "node server.cjs", "test:browser": "node tests/browser.cjs"},
-  "devDependencies": {"@playwright/test": "^1.56.1"}
+  "scripts": {
+    "test": "node tests/smoke.cjs",
+    "start": "node server.cjs",
+    "test:browser": "node tests/browser.cjs"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.56.1"
+  },
+  "dependencies": {
+    "three": "^0.187.0"
+  }
 }

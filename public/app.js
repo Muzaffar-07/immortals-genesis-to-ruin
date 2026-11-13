@@ -1,11 +1,14 @@
 import { Component } from './game.js';
 import { mount } from './runtime.js';
+import { enhance } from './experience.js';
 
 const game = new Component();
 const root = document.querySelector('#game');
 const cleanup = mount(root, game);
+const cleanupExperience = enhance(game, root);
 function resize() {
-  const scale = Math.min(innerWidth / 1280, Math.max(240, innerHeight - 64) / 720);
+  const toolbarHeight = document.querySelector('header').offsetHeight + (document.querySelector('#device-note').offsetHeight || 0);
+  const scale = Math.min(innerWidth / 1280, Math.max(160, innerHeight - toolbarHeight) / 720);
   root.style.transform = `scale(${scale})`;
   const viewport = document.querySelector('#viewport');
   viewport.style.width = `${1280 * scale}px`;
@@ -20,4 +23,4 @@ document.querySelector('#fullscreen').addEventListener('click', async () => {
   try { if (document.fullscreenElement) await document.exitFullscreen(); else await document.documentElement.requestFullscreen(); } catch { /* Browser may disallow fullscreen. */ }
 });
 document.addEventListener('visibilitychange', () => { if (document.hidden && game.mode === 'play') game.setPause(true); });
-addEventListener('pagehide', cleanup, {once:true});
+addEventListener('pagehide', () => { cleanupExperience(); cleanup(); }, {once:true});

@@ -3,10 +3,11 @@
 <head>
 <meta charset="utf-8">
 <title>Immortals: Genesis to Ruin</title>
+<script type="importmap">{"imports":{"three":"./vendor/three.module.js"}}</script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="A free, open-source action game across six ages. Two immortals journey from the first morning to the end of creation.">
 <link rel="stylesheet" href="./site.css"></head>
-<body><header><span>IMMORTALS · GENESIS TO RUIN</span><label>Difficulty <select id="difficulty"><option>Story</option><option selected>Balanced</option><option>Relentless</option></select></label><label><input id="bloom" type="checkbox" checked> Bloom</label><label><input id="shake" type="checkbox" checked> Screen shake</label><button id="fullscreen">Fullscreen</button><a href="https://github.com/Muzaffar-07/immortals-genesis-to-ruin">Source</a></header><p id="device-note">Play on a desktop with a keyboard and mouse.</p><div id="viewport">
+<body><header><span>IMMORTALS <small>NIGHTFALL</small></span><span id="render-status" role="status">INITIALIZING</span><button id="continue">Continue</button><button id="journal">Journal · M</button><label>Difficulty <select id="difficulty"><option>Story</option><option selected>Balanced</option><option>Relentless</option></select></label><label><input id="bloom" type="checkbox" checked> Cinema</label><label><input id="shake" type="checkbox" checked> Shake</label><label><input id="sound" type="checkbox" checked> Sound</label><label><input id="gore" type="checkbox" checked> Blood</label><button id="fullscreen">Fullscreen</button><a href="https://github.com/Muzaffar-07/immortals-genesis-to-ruin">Source</a></header><p id="device-note">Play on a desktop with a keyboard and mouse.</p><div id="viewport">
 <main id="game">
 
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&amp;family=Barlow+Semi+Condensed:wght@400;500;600&amp;display=swap">
@@ -28,10 +29,10 @@ a{color:#e8c27a}a:hover{color:#fff6e0}
 
 <sc-if value="{{ isTitle }}" hint-placeholder-val="{{ true }}">
 <div class="imf" style="position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: center; gap: 20px; padding: 0 0 56px 96px; box-sizing: border-box; background: linear-gradient(90deg, rgba(3,4,10,0.86) 0%, rgba(3,4,10,0.5) 44%, rgba(3,4,10,0) 72%)">
-<div style="font-size: 14px; font-weight: 500; letter-spacing: 0.42em; text-transform: uppercase; color: #e8c27a">A chronicle in six ages</div>
+<div style="font-size: 14px; font-weight: 500; letter-spacing: 0.42em; text-transform: uppercase; color: #e8c27a">NIGHTFALL / A SURVIVAL HORROR CHRONICLE</div>
 <h1 style="margin: 0; font-family: 'Cinzel', serif; font-weight: 900; font-size: 104px; line-height: 0.95; letter-spacing: 0.08em; color: #f6efdf">IMMORTALS</h1>
 <div style="font-family: 'Cinzel', serif; font-weight: 500; font-size: 22px; letter-spacing: 0.5em; color: #e8c27a">GENESIS TO RUIN</div>
-<p style="margin: 6px 0 0; max-width: 480px; font-size: 19px; line-height: 1.5; color: #ddd6c6">A maker shaped a world and set two upon it who could not die. Walk with them from the first fire to the last star, and back again.</p>
+<p style="margin: 6px 0 0; max-width: 480px; font-size: 19px; line-height: 1.5; color: #ddd6c6">You cannot die. You can still be afraid. Six ages. Two immortals. Something in the dark that remembers every life you have lived.</p>
 <div style="display: flex; gap: 16px; margin-top: 12px">
 <button class="imb" onClick="{{ begin }}" style="min-height: 52px; padding: 0 32px; font-family: inherit; font-weight: 600; font-size: 15px; letter-spacing: 0.24em; text-transform: uppercase; color: #12100a; background-color: #e8c27a; border: 1px solid #e8c27a; cursor: pointer">Begin the cycle</button>
 <button class="imb" onClick="{{ openChapters }}" style="min-height: 52px; padding: 0 32px; font-family: inherit; font-weight: 600; font-size: 15px; letter-spacing: 0.24em; text-transform: uppercase; color: #f3ead6; background-color: rgba(8,9,16,0.6); border: 1px solid rgba(232,194,122,0.7); cursor: pointer">Chapters</button>
