@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Immortals: Genesis to Ruin</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="A free, open-source action game across six ages. Two immortals journey from the first morning to the end of creation.">
+<link rel="stylesheet" href="./site.css"></head>
+<body><header><span>IMMORTALS · GENESIS TO RUIN</span><label>Difficulty <select id="difficulty"><option>Story</option><option selected>Balanced</option><option>Relentless</option></select></label><label><input id="bloom" type="checkbox" checked> Bloom</label><label><input id="shake" type="checkbox" checked> Screen shake</label><button id="fullscreen">Fullscreen</button><a href="https://github.com/Muzaffar-07/immortals-genesis-to-ruin">Source</a></header><p id="device-note">Play on a desktop with a keyboard and mouse.</p><div id="viewport">
+<main id="game">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&amp;family=Barlow+Semi+Condensed:wght@400;500;600&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#e8c27a}a:hover{color:#fff6e0}
+.imb{transition:background-color .15s,color .15s,transform .15s}
+.imb:hover,.imb:focus-visible{background-color:#fff6e0 !important;color:#12100a !important;outline:2px solid #e8c27a;outline-offset:3px}
+.imb:active{transform:translateY(1px)}
+.imc{transition:background-color .15s}
+.imc:hover,.imc:focus-visible{background-color:rgba(232,194,122,0.2) !important;outline:2px solid #e8c27a;outline-offset:2px}
+@keyframes imFade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.imf{animation:imFade .7s ease both}
+@media (prefers-reduced-motion: reduce){.imf{animation:none}}
+</style>
+
+<div style="position: relative; width: 1280px; height: 720px; overflow: hidden; background: #03040a; color: #f3ead6; font-family: 'Barlow Semi Condensed', system-ui, sans-serif">
+<canvas data-im-stage="1" ref="{{ cvRef }}" width="1280" height="720" tabIndex="0" aria-label="Game view. Move with W A S D, aim with the mouse, click to strike." style="position: absolute; left: 0; top: 0; width: 1280px; height: 720px; display: block; outline: none; cursor: crosshair; touch-action: none"></canvas>
+
+<sc-if value="{{ isTitle }}" hint-placeholder-val="{{ true }}">
+<div class="imf" style="position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: center; gap: 20px; padding: 0 0 56px 96px; box-sizing: border-box; background: linear-gradient(90deg, rgba(3,4,10,0.86) 0%, rgba(3,4,10,0.5) 44%, rgba(3,4,10,0) 72%)">
+<div style="font-size: 14px; font-weight: 500; letter-spacing: 0.42em; text-transform: uppercase; color: #e8c27a">A chronicle in six ages</div>
+<h1 style="margin: 0; font-family: 'Cinzel', serif; font-weight: 900; font-size: 104px; line-height: 0.95; letter-spacing: 0.08em; color: #f6efdf">IMMORTALS</h1>
+<div style="font-family: 'Cinzel', serif; font-weight: 500; font-size: 22px; letter-spacing: 0.5em; color: #e8c27a">GENESIS TO RUIN</div>
+<p style="margin: 6px 0 0; max-width: 480px; font-size: 19px; line-height: 1.5; color: #ddd6c6">A maker shaped a world and set two upon it who could not die. Walk with them from the first fire to the last star, and back again.</p>
+<div style="display: flex; gap: 16px; margin-top: 12px">
+<button class="imb" onClick="{{ begin }}" style="min-height: 52px; padding: 0 32px; font-family: inherit; font-weight: 600; font-size: 15px; letter-spacing: 0.24em; text-transform: uppercase; color: #12100a; background-color: #e8c27a; border: 1px solid #e8c27a; cursor: pointer">Begin the cycle</button>
+<button class="imb" onClick="{{ openChapters }}" style="min-height: 52px; padding: 0 32px; font-family: inherit; font-weight: 600; font-size: 15px; letter-spacing: 0.24em; text-transform: uppercase; color: #f3ead6; background-color: rgba(8,9,16,0.6); border: 1px solid rgba(232,194,122,0.7); cursor: pointer">Chapters</button>
+</div>
+<div style="position: absolute; left: 96px; bottom: 36px; max-width: 560px; font-size: 13px; line-height: 1.7; letter-spacing: 0.16em; text-transform: uppercase; color: #b9b2a2">Keyboard and mouse · W A S D move · Click strike · Space dash · Q swap · E interact · F communion · P pause</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ isChapters }}" hint-placeholder-val="{{ false }}">
+<div class="imf" style="position: absolute; inset: 0; display: flex; flex-direction: column; gap: 28px; padding: 64px 96px; box-sizing: border-box; background: rgba(3,4,10,0.82)">
+<div style="display: flex; justify-content: space-between; align-items: flex-end">
+<div style="display: flex; flex-direction: column; gap: 10px">
+<div style="font-size: 13px; font-weight: 500; letter-spacing: 0.42em; text-transform: uppercase; color: #e8c27a">Chapters</div>
+<h2 style="margin: 0; font-family: 'Cinzel', serif; font-weight: 700; font-size: 44px; letter-spacing: 0.06em; color: #f6efdf">Six ages of the two</h2>
+</div>
+<button class="imb" onClick="{{ backTitle }}" style="min-height: 48px; padding: 0 28px; font-family: inherit; font-weight: 600; font-size: 14px; letter-spacing: 0.24em; text-transform: uppercase; color: #f3ead6; background-color: rgba(8,9,16,0.6); border: 1px solid rgba(232,194,122,0.7); cursor: pointer">Back</button>
+</div>
+<div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px">
+<sc-for list="{{ chapters }}" as="c" hint-placeholder-count="6">
+<button class="imc" onClick="{{ c.pick }}" style="display: flex; flex-direction: column; align-items: flex-start; gap: 10px; min-height: 196px; padding: 24px 26px; text-align: left; font-family: inherit; color: #f3ead6; background-color: rgba(10,11,20,0.78); border: 1px solid rgba(232,194,122,0.42); cursor: pointer">
+<span style="font-family: 'Cinzel', serif; font-weight: 500; font-size: 30px; color: #e8c27a">{{c.num}}</span>
+<span style="font-family: 'Cinzel', serif; font-weight: 700; font-size: 22px; letter-spacing: 0.06em">{{c.name}}</span>
+<span style="font-size: 15px; line-height: 1.45; color: #cfc8b8">{{c.place}}</span>
+</button>
+</sc-for>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ isCut }}" hint-placeholder-val="{{ false }}">
+<div style="position: absolute; inset: 0; pointer-events: none">
+<div style="position: absolute; left: 96px; top: 28px; font-size: 13px; font-weight: 500; letter-spacing: 0.4em; text-transform: uppercase; color: #e8c27a">{{cutTitle}}</div>
+<div style="position: absolute; right: 96px; top: 14px; display: flex; align-items: center; gap: 14px; pointer-events: auto">
+<span style="font-size: 13px; letter-spacing: 0.2em; color: #cfc8b8">{{cutCount}}</span>
+<button class="imb" onClick="{{ cutNext }}" style="min-height: 46px; padding: 0 24px; font-family: inherit; font-weight: 600; font-size: 13px; letter-spacing: 0.24em; text-transform: uppercase; color: #12100a; background-color: #e8c27a; border: 1px solid #e8c27a; cursor: pointer">Continue</button>
+<button class="imb" onClick="{{ cutSkip }}" style="min-height: 46px; padding: 0 24px; font-family: inherit; font-weight: 600; font-size: 13px; letter-spacing: 0.24em; text-transform: uppercase; color: #f3ead6; background-color: rgba(8,9,16,0.6); border: 1px solid rgba(232,194,122,0.7); cursor: pointer">Skip</button>
+</div>
+<p style="position: absolute; left: 150px; right: 150px; bottom: 22px; height: 72px; margin: 0; display: flex; align-items: center; justify-content: center; text-align: center; font-family: 'Cinzel', serif; font-weight: 500; font-size: 24px; line-height: 1.4; color: #f6efdf">{{cutText}}</p>
+</div>
+</sc-if>
+
+<sc-if value="{{ isBrief }}" hint-placeholder-val="{{ false }}">
+<div class="imf" style="position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: center; gap: 18px; padding: 0 0 0 96px; box-sizing: border-box; background: linear-gradient(90deg, rgba(3,4,10,0.92) 0%, rgba(3,4,10,0.78) 46%, rgba(3,4,10,0.15) 80%)">
+<div style="font-size: 13px; font-weight: 500; letter-spacing: 0.42em; text-transform: uppercase; color: #e8c27a">{{chNum}}</div>
+<h2 style="margin: 0; font-family: 'Cinzel', serif; font-weight: 700; font-size: 60px; line-height: 1.05; letter-spacing: 0.05em; color: #f6efdf">{{chName}}</h2>
+<div style="font-size: 16px; letter-spacing: 0.14em; text-transform: uppercase; color: #cfc8b8">{{chPlace}}</div>
+<p style="margin: 6px 0 0; max-width: 520px; font-size: 19px; line-height: 1.55; color: #e4ddcd">{{chBrief}}</p>
+<ul style="margin: 4px 0 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 10px; max-width: 520px">
+<sc-for list="{{ goals }}" as="g" hint-placeholder-count="3">
+<li style="display: flex; align-items: center; gap: 14px; font-size: 17px; color: #f3ead6"><span aria-hidden="true" style="flex: none; width: 9px; height: 9px; transform: rotate(45deg); border: 1px solid #e8c27a"></span><span>{{g.text}}</span></li>
+</sc-for>
+</ul>
+<div style="display: flex; gap: 16px; margin-top: 16px">
+<button class="imb" onClick="{{ deploy }}" style="min-height: 52px; padding: 0 32px; font-family: inherit; font-weight: 600; font-size: 15px; letter-spacing: 0.24em; text-transform: uppercase; color: #12100a; background-color: #e8c27a; border: 1px solid #e8c27a; cursor: pointer">Begin</button>
+<button class="imb" onClick="{{ backTitle }}" style="min-height: 52px; padding: 0 32px; font-family: inherit; font-weight: 600; font-size: 15px; letter-spacing: 0.24em; text-transform: uppercase; color: #f3ead6; background-color: rgba(8,9,16,0.6); border: 1px solid rgba(232,194,122,0.7); cursor: pointer">Title</button>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ isPlay }}" hint-placeholder-val="{{ false }}">
+<div style="position: absolute; inset: 0; pointer-events: none; text-shadow: 0 1px 3px rgba(0,0,0,0.9)">
+<div style="position: absolute; left: 28px; top: 24px; width: 250px; display: flex; flex-direction: column; gap: 10px">
+<div style="display: flex; flex-direction: column; gap: 8px; padding: 10px 14px 12px; background: rgba(6,7,12,0.66); border: 1px solid rgba(255,200,120,0.32); opacity: {{aOp}}">
+<div style="display: flex; justify-content: space-between; align-items: baseline">
+<span style="font-family: 'Cinzel', serif; font-weight: 700; font-size: 16px; letter-spacing: 0.18em; color: #ffd98a">ARO</span>
+<span style="font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase; color: #ddd6c6">{{aTag}}</span>
+</div>
+<div style="height: 6px; background: rgba(255,255,255,0.18)"><div style="height: 6px; width: {{aW}}; background: #ffc56a"></div></div>
+</div>
+<div style="display: flex; flex-direction: column; gap: 8px; padding: 10px 14px 12px; background: rgba(6,7,12,0.66); border: 1px solid rgba(150,200,255,0.32); opacity: {{bOp}}">
+<div style="display: flex; justify-content: space-between; align-items: baseline">
+<span style="font-family: 'Cinzel', serif; font-weight: 700; font-size: 16px; letter-spacing: 0.18em; color: #a9d2ff">ENA</span>
+<span style="font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase; color: #ddd6c6">{{bTag}}</span>
+</div>
+<div style="height: 6px; background: rgba(255,255,255,0.18)"><div style="height: 6px; width: {{bW}}; background: #8cc4ff"></div></div>
+</div>
+</div>
+
+<div style="position: absolute; left: 330px; right: 330px; top: 20px; display: flex; flex-direction: column; align-items: center; gap: 6px; text-align: center">
+<div style="font-size: 12px; font-weight: 500; letter-spacing: 0.42em; text-transform: uppercase; color: #e8c27a">Objective</div>
+<div style="font-family: 'Cinzel', serif; font-weight: 700; font-size: 22px; letter-spacing: 0.06em; color: #f6efdf">{{obj}}</div>
+<div style="font-size: 15px; letter-spacing: 0.08em; color: #e4ddcd">{{sub}}</div>
+<sc-if value="{{ hasBar }}" hint-placeholder-val="{{ false }}">
+<div style="display: flex; align-items: center; gap: 12px; margin-top: 4px">
+<span style="font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase; color: #ffd98a">{{barLabel}}</span>
+<div style="width: 300px; height: 6px; background: rgba(255,255,255,0.2)"><div style="height: 6px; width: {{barW}}; background: #ffb057"></div></div>
+</div>
+</sc-if>
+<sc-if value="{{ hasTimer }}" hint-placeholder-val="{{ false }}">
+<div style="font-family: 'Cinzel', serif; font-weight: 700; font-size: 30px; letter-spacing: 0.1em; color: #f6efdf">{{timer}}</div>
+</sc-if>
+<sc-if value="{{ hasBoss }}" hint-placeholder-val="{{ false }}">
+<div style="display: flex; flex-direction: column; align-items: center; gap: 6px; margin-top: 6px">
+<div style="width: 520px; height: 8px; background: rgba(255,255,255,0.18)"><div style="height: 8px; width: {{bossW}}; background: #b98cff"></div></div>
+<span style="font-family: 'Cinzel', serif; font-weight: 500; font-size: 13px; letter-spacing: 0.4em; color: #d9c2ff">THE UNMAKING</span>
+</div>
+</sc-if>
+</div>
+
+<div style="position: absolute; right: 28px; top: 24px; display: flex; align-items: center; gap: 14px">
+<span style="font-size: 12px; letter-spacing: 0.24em; text-transform: uppercase; color: #ddd6c6">{{chName}}</span>
+<button class="imc" onClick="{{ pause }}" aria-label="Pause" style="pointer-events: auto; width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; background-color: rgba(6,7,12,0.66); border: 1px solid rgba(232,194,122,0.5); color: #f3ead6; cursor: pointer"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 2v12M11 2v12"></path></svg></button>
+</div>
+
+<div style="position: absolute; left: 28px; bottom: 24px; width: 250px; display: flex; flex-direction: column; gap: 8px; padding: 10px 14px 12px; background: rgba(6,7,12,0.66); border: 1px solid rgba(232,194,122,0.32)">
+<div style="display: flex; justify-content: space-between; align-items: baseline">
+<span style="font-family: 'Cinzel', serif; font-weight: 700; font-size: 14px; letter-spacing: 0.18em; color: #f6efdf">COMMUNION</span>
+<span style="font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: #ffd98a">{{ultTag}}</span>
+</div>
+<div style="height: 6px; background: rgba(255,255,255,0.18)"><div style="height: 6px; width: {{ultW}}; background: #fff1c9"></div></div>
+<div style="font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; color: #cfc8b8">Q swap · Space dash · E interact · F communion</div>
+</div>
+
+<div style="position: absolute; left: 300px; right: 300px; bottom: 26px; display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center">
+<sc-if value="{{ hasHint }}" hint-placeholder-val="{{ false }}">
+<div style="display: flex; align-items: center; gap: 12px; padding: 8px 18px; background: rgba(6,7,12,0.72); border: 1px solid rgba(232,194,122,0.6); font-size: 15px; letter-spacing: 0.14em; text-transform: uppercase; color: #f6efdf"><span style="display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 26px; border: 1px solid #e8c27a; font-weight: 600; color: #e8c27a">E</span><span>Hold · {{hint}}</span></div>
+</sc-if>
+<sc-if value="{{ hasToast }}" hint-placeholder-val="{{ false }}">
+<div style="padding: 8px 20px; background: rgba(6,7,12,0.62); font-family: 'Cinzel', serif; font-weight: 500; font-size: 17px; line-height: 1.45; color: #f6efdf">{{toast}}</div>
+</sc-if>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ isPause }}" hint-placeholder-val="{{ false }}">
+<div style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; background: rgba(3,4,10,0.74)">
+<div class="imf" style="width: 520px; display: flex; flex-direction: column; gap: 20px; padding: 40px 44px; box-sizing: border-box; background: rgba(8,9,16,0.92); border: 1px solid rgba(232,194,122,0.45)">
+<div style="font-size: 13px; font-weight: 500; letter-spacing: 0.42em; text-transform: uppercase; color: #e8c27a">{{chNum}}</div>
+<h2 style="margin: 0; font-family: 'Cinzel', serif; font-weight: 700; font-size: 40px; letter-spacing: 0.08em; color: #f6efdf">Paused</h2>
+<ul style="margin: 0; padding: 0; list-style: none; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px 24px; font-size: 16px; color: #e4ddcd">
+<li>W A S D · Move</li>
+<li>Mouse · Aim</li>
+<li>Click or J · Strike</li>
+<li>Space · Dash through harm</li>
+<li>Q · Swap Aro and Ena</li>
+<li>E · Hold to interact</li>
+<li>F · Communion, when full</li>
+<li>P · Pause</li>
+</ul>
+<div style="display: flex; flex-wrap: wrap; gap: 14px; margin-top: 6px">
+<button class="imb" onClick="{{ resume }}" style="min-height: 48px; padding: 0 26px; font-family: inherit; font-weight: 600; font-size: 14px; letter-spacing: 0.22em; text-transform: uppercase; color: #12100a; background-color: #e8c27a; border: 1px solid #e8c27a; cursor: pointer">Resume</button>
+<button class="imb" onClick="{{ retry }}" style="min-height: 48px; padding: 0 26px; font-family: inherit; font-weight: 600; font-size: 14px; letter-spacing: 0.22em; text-transform: uppercase; color: #f3ead6; background-color: rgba(8,9,16,0.6); border: 1px solid rgba(232,194,122,0.7); cursor: pointer">Restart</button>
+<button class="imb" onClick="{{ backTitle }}" style="min-height: 48px; padding: 0 26px; font-family: inherit; font-weight: 600; font-size: 14px; letter-spacing: 0.22em; text-transform: uppercase; color: #f3ead6; background-color: rgba(8,9,16,0.6); border: 1px solid rgba(232,194,122,0.7); cursor: pointer">Title</button>
+</div>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ isFail }}" hint-placeholder-val="{{ false }}">
+<div style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; background: rgba(10,3,4,0.74)">
+<div class="imf" style="width: 560px; display: flex; flex-direction: column; gap: 18px; padding: 40px 44px; box-sizing: border-box; background: rgba(8,9,16,0.92); border: 1px solid rgba(255,150,120,0.5)">
+<div style="font-size: 13px; font-weight: 500; letter-spacing: 0.42em; text-transform: uppercase; color: #ffb39c">{{chName}}</div>
+<h2 style="margin: 0; font-family: 'Cinzel', serif; font-weight: 700; font-size: 40px; letter-spacing: 0.06em; color: #f6efdf">The cycle falters</h2>
+<p style="margin: 0; font-size: 19px; line-height: 1.55; color: #e4ddcd">{{failWhy}}</p>
+<div style="display: flex; gap: 14px; margin-top: 6px">
+<button class="imb" onClick="{{ retry }}" style="min-height: 48px; padding: 0 26px; font-family: inherit; font-weight: 600; font-size: 14px; letter-spacing: 0.22em; text-transform: uppercase; color: #12100a; background-color: #e8c27a; border: 1px solid #e8c27a; cursor: pointer">Try again</button>
+<button class="imb" onClick="{{ backTitle }}" style="min-height: 48px; padding: 0 26px; font-family: inherit; font-weight: 600; font-size: 14px; letter-spacing: 0.22em; text-transform: uppercase; color: #f3ead6; background-color: rgba(8,9,16,0.6); border: 1px solid rgba(232,194,122,0.7); cursor: pointer">Title</button>
+</div>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ isWin }}" hint-placeholder-val="{{ false }}">
+<div style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; background: rgba(3,4,10,0.7)">
+<div class="imf" style="width: 620px; display: flex; flex-direction: column; gap: 18px; padding: 40px 44px; box-sizing: border-box; background: rgba(8,9,16,0.92); border: 1px solid rgba(232,194,122,0.5)">
+<div style="font-size: 13px; font-weight: 500; letter-spacing: 0.42em; text-transform: uppercase; color: #e8c27a">{{chNum}} complete</div>
+<h2 style="margin: 0; font-family: 'Cinzel', serif; font-weight: 700; font-size: 42px; letter-spacing: 0.06em; color: #f6efdf">{{chName}}</h2>
+<p style="margin: 0; font-family: 'Cinzel', serif; font-weight: 500; font-size: 19px; line-height: 1.5; color: #e4ddcd">{{chOutro}}</p>
+<div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; padding: 16px 0; border-top: 1px solid rgba(232,194,122,0.3); border-bottom: 1px solid rgba(232,194,122,0.3)">
+<div style="display: flex; flex-direction: column; gap: 6px"><span style="font-size: 12px; letter-spacing: 0.24em; text-transform: uppercase; color: #cfc8b8">Time</span><span style="font-family: 'Cinzel', serif; font-weight: 700; font-size: 28px; color: #f6efdf">{{statTime}}</span></div>
+<div style="display: flex; flex-direction: column; gap: 6px"><span style="font-size: 12px; letter-spacing: 0.24em; text-transform: uppercase; color: #cfc8b8">Foes unmade</span><span style="font-family: 'Cinzel', serif; font-weight: 700; font-size: 28px; color: #f6efdf">{{statKills}}</span></div>
+<div style="display: flex; flex-direction: column; gap: 6px"><span style="font-size: 12px; letter-spacing: 0.24em; text-transform: uppercase; color: #cfc8b8">Rebirths</span><span style="font-family: 'Cinzel', serif; font-weight: 700; font-size: 28px; color: #f6efdf">{{statReborn}}</span></div>
+</div>
+<div style="display: flex; gap: 14px; margin-top: 4px">
+<button class="imb" onClick="{{ next }}" style="min-height: 48px; padding: 0 26px; font-family: inherit; font-weight: 600; font-size: 14px; letter-spacing: 0.22em; text-transform: uppercase; color: #12100a; background-color: #e8c27a; border: 1px solid #e8c27a; cursor: pointer">{{nextLabel}}</button>
+<button class="imb" onClick="{{ backTitle }}" style="min-height: 48px; padding: 0 26px; font-family: inherit; font-weight: 600; font-size: 14px; letter-spacing: 0.22em; text-transform: uppercase; color: #f3ead6; background-color: rgba(8,9,16,0.6); border: 1px solid rgba(232,194,122,0.7); cursor: pointer">Title</button>
+</div>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ isEnd }}" hint-placeholder-val="{{ false }}">
+<div class="imf" style="position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 22px; text-align: center; background: rgba(3,4,10,0.6)">
+<div style="font-size: 13px; font-weight: 500; letter-spacing: 0.42em; text-transform: uppercase; color: #e8c27a">Epilogue</div>
+<h2 style="margin: 0; font-family: 'Cinzel', serif; font-weight: 900; font-size: 64px; letter-spacing: 0.08em; color: #f6efdf">The cycle begins again</h2>
+<p style="margin: 0; max-width: 620px; font-size: 20px; line-height: 1.55; color: #e4ddcd">The morning is the same. The two who walk into it are not. This time they know where every road ends, and they walk it anyway.</p>
+<button class="imb" onClick="{{ backTitle }}" style="min-height: 52px; margin-top: 10px; padding: 0 32px; font-family: inherit; font-weight: 600; font-size: 15px; letter-spacing: 0.24em; text-transform: uppercase; color: #12100a; background-color: #e8c27a; border: 1px solid #e8c27a; cursor: pointer">Return to the first morning</button>
+</div>
+</sc-if>
+</div>
+</main></div>
+<script type="module" src="./app.js"></script>
+</body>
+</html>
