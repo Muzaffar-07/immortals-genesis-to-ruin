@@ -5,7 +5,7 @@ param(
 $ErrorActionPreference = 'Stop'
 $projectPath = (Resolve-Path "$PSScriptRoot/../native").Path
 $templatePath = (Resolve-Path $Template).Path.Replace('\','/')
-$outputPath = Join-Path $projectPath 'build/Immortals-Glass-Choir'
+$outputPath = Join-Path $projectPath 'build/Immortals-Glass-Choir-Cinematic'
 New-Item -ItemType Directory -Force $outputPath | Out-Null
 $preset = @"
 [preset.0]
@@ -14,9 +14,9 @@ platform="Windows Desktop"
 runnable=true
 advanced_options=false
 export_filter="all_resources"
-include_filter=""
+include_filter="assets/voice/*.json"
 exclude_filter="test-output/*,build/*,*.log"
-export_path="build/Immortals-Glass-Choir/Immortals.exe"
+export_path="build/Immortals-Glass-Choir-Cinematic/Immortals.exe"
 encryption_include_filters=""
 encryption_exclude_filters=""
 encrypt_pck=false
@@ -40,6 +40,6 @@ Get-ChildItem -LiteralPath "$projectPath/licenses" -File | ForEach-Object {
     Copy-Item -LiteralPath $_.FullName -Destination "$outputPath/licenses" -Force
 }
 Copy-Item -LiteralPath "$projectPath/Launch-Compatibility.cmd" -Destination $outputPath -Force
-$zipPath = Join-Path $projectPath 'build/Immortals-Glass-Choir-Windows-x64.zip'
+$zipPath = Join-Path $projectPath 'build/Immortals-Glass-Choir-Cinematic-Windows-x64.zip'
 Compress-Archive -Path "$outputPath/*" -DestinationPath $zipPath -Force
 Get-FileHash -LiteralPath $zipPath -Algorithm SHA256

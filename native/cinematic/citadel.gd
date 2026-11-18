@@ -20,10 +20,10 @@ func build(_chapter: int) -> void:
 	env = WorldEnvironment.new()
 	env.environment = load(SOURCE+"environment.tres").duplicate()
 	env.environment.ambient_light_color = Color(0.22,0.27,0.35)
-	env.environment.ambient_light_energy = 0.8
-	env.environment.tonemap_exposure = 2.5
+	env.environment.ambient_light_energy = 0.6
+	env.environment.tonemap_exposure = 1.9
 	env.environment.glow_enabled = true
-	env.environment.glow_intensity = 0.65
+	env.environment.glow_intensity = 0.38
 	env.environment.ssao_enabled = true
 	env.environment.ssao_intensity = 1.2
 	env.environment.volumetric_fog_density = 0.003

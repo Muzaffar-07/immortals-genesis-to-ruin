@@ -21,6 +21,10 @@ var lock_target: Combatant
 var active := false
 var shake := 0.0
 var phase_seen := 1
+var attack_buffer := 0.0
+var lunging := 0.0
+var heavy_strike := false
+var combat_stance := 0.0
 
 func setup_cast(owner_game: Node3D, cast: String, hostile: bool = false, leader: bool = false) -> void:
 	game = owner_game
@@ -64,12 +68,12 @@ func setup_cast(owner_game: Node3D, cast: String, hostile: bool = false, leader:
 		camera.position.x = 0.45
 		camera.current = true
 		pitch = -0.12
-		game.world.light(self,Vector3(0,1.6,0.5),Color(0.38,0.65,0.9),0.55,3)
+		game.world.light(self,Vector3(0,1.6,0.5),Color(0.9,0.86,0.78),0.28,3)
 
 func _physics_process(delta: float) -> void:
 	if dead or not game.playing: return
 	var dt := delta * (0.28 if enemy and game.slow_time > 0 else 1.0)
-	for key in ["cooldown","invulnerable","combo_window","parry_left","stun","blink_cd","gravity_cd"]:
+	for key in ["cooldown","invulnerable","combo_window","parry_left","stun","blink_cd","gravity_cd","attack_buffer","combat_stance"]:
 		set(key,maxf(0,float(get(key))-dt))
 	if stun > 0:
 		velocity.x = move_toward(velocity.x,0,dt*12)
@@ -84,7 +88,13 @@ func _physics_process(delta: float) -> void:
 				hit_at = -1
 				resolve_hit()
 	velocity.y -= 24*dt
+	if lunging>0:
+		lunging=maxf(0,lunging-dt)
+		var forward := Vector3(0,0,1).rotated(Vector3.UP,human.rotation.y)
+		velocity.x+=forward.x*3.2
+		velocity.z+=forward.z*3.2
 	move_and_slide()
+	human.stance="guard" if combat_stance>0 else "idle"
 	human.animate(Vector2(velocity.x,velocity.z).length(),dt)
 	if position.y < -40:
 		if enemy: damage(10000)
@@ -102,17 +112,20 @@ func controls(delta: float) -> void:
 	if sprint: stamina -= delta*15
 	if blocking: speed = 2; human.play("block",0.15)
 	if attack_left > 0: speed *= 0.3
-	if Input.is_action_just_pressed("jump") and is_on_floor(): velocity.y = 7.5
-	if Input.is_action_just_pressed("dodge") and stamina >= 24:
+	if Input.is_action_just_pressed("jump") and is_on_floor():
+		velocity.y = 7.5
+		human.play("jump_start",0.65,1,true)
+	if Input.is_action_just_pressed("dodge") and stamina >= 24 and dodge_time<=0:
 		stamina -= 24
-		dodge_time = 0.24
+		dodge_time = 0.35
 		invulnerable = 0.38
+		attack_left=0; hit_at=-1; cooldown=0.4; lunging=0
 		dodge_direction = direction if direction.length()>0.1 else Vector3(0,0,-1).rotated(Vector3.UP,yaw)
-		game.world.burst(position+Vector3.UP,Color(0.1,0.65,1),18)
+		human.play("evade_left" if movement.x<0 else "evade_right",0.45,2,true)
 	if dodge_time>0:
 		dodge_time -= delta
 		direction = dodge_direction
-		speed = 14
+		speed = 9
 	velocity.x = direction.x*speed
 	velocity.z = direction.z*speed
 	if direction.length()>0.1 and attack_left<=0: avatar.rotation.y = lerp_angle(avatar.rotation.y,atan2(direction.x,direction.z),delta*14)
@@ -129,7 +142,11 @@ func controls(delta: float) -> void:
 		if foot_time<=0:
 			foot_time = 0.28 if sprint else 0.44
 			game.sound.play_at("footstep_concrete",position,-18,1.1)
-	if Input.is_action_pressed("attack") and cooldown<=0 and not blocking: strike()
+	if Input.is_action_just_pressed("attack"): attack_buffer=0.25
+	if (Input.is_action_pressed("attack") or attack_buffer>0) and cooldown<=0 and not blocking and dodge_time<=0:
+		attack_buffer=0
+		strike()
+	if Input.is_action_just_pressed("heavy") and cooldown<=0 and not blocking and stamina>=20: strike(true)
 	if Input.is_action_just_pressed("blink"): blink()
 	if Input.is_action_just_pressed("gravity"): gravity()
 	if Input.is_action_just_pressed("pulse") and pulse>=100:
@@ -151,32 +168,36 @@ func nearest(radius: float) -> Combatant:
 func clear_sight(target: Node3D) -> bool:
 	return get_world_3d().direct_space_state.intersect_ray(PhysicsRayQueryParameters3D.create(position+Vector3.UP,target.position+Vector3.UP,1)).is_empty()
 
-func strike() -> void:
+func strike(heavy: bool = false) -> void:
+	heavy_strike=heavy
+	combat_stance=5
 	combo = (combo+1)%3 if combo_window>0 else 0
 	combo_window = 1.25
-	attack_left = 0.48 if combo<2 else 0.64
+	attack_left = 0.8 if heavy else [0.43,0.49,0.64][combo]
 	cooldown = attack_left
-	hit_at = 0.18 if combo<2 else 0.3
+	hit_at = 0.34 if heavy else [0.13,0.2,0.3][combo]
 	hit_targets.clear()
-	human.play(["combo","kick","roundhouse"][combo],attack_left,2.5)
+	if heavy: stamina-=20
+	human.action_left=0
+	human.play("kick" if heavy else ["jab","cross","hook"][combo],attack_left,1.7 if heavy else 1.0,true)
 	var target := nearest(4.5)
 	if target:
 		var off := target.position-position
 		human.rotation.y = atan2(off.x,off.z)
-		if off.length()>2.2: velocity += off.normalized()*5
+		if off.length()>1.6: lunging=0.15
 	else: human.rotation.y = yaw+PI
 
 func resolve_hit() -> void:
-	game.world.slash(position,human.rotation.y,combo)
-	game.sound.play_at("impactMetal_heavy",position,-12,1.5)
+	if heavy_strike: game.world.slash(position,human.rotation.y,combo)
 	for target in game.enemies.duplicate():
 		var offset: Vector3 = target.position-position
-		if not target.dead and offset.length()<3.5 and Vector3(0,0,1).rotated(Vector3.UP,human.rotation.y).dot(offset.normalized())>0.15 and clear_sight(target):
-			target.damage([27,34,52][combo])
+		if not target.dead and offset.length()<2.8 and Vector3(0,0,1).rotated(Vector3.UP,human.rotation.y).dot(offset.normalized())>0.3 and clear_sight(target):
+			target.damage(62 if heavy_strike else [27,34,52][combo])
+			game.sound.play_at("impactPunch_heavy",target.position,-5,0.9 if heavy_strike else 1.1)
 			target.stun = 0.08 if target.boss else 0.35 if combo<2 else 0.8
 			target.velocity += offset.normalized()*(3 if combo<2 else 8)
 			pulse = minf(100,pulse+10)
-			shake = 0.5
+			shake = 0.65 if heavy_strike else 0.3
 			game.register_hit(combo)
 
 func blink() -> void:
@@ -240,12 +261,12 @@ func ai(delta: float) -> void:
 			elif role=="guard" and distance<18 and clear_sight(target):
 				game.beam(position+Vector3.UP*1.4,target.position+Vector3.UP)
 				target.receive_attack(10,self)
-				human.play("shoot",0.4)
+				human.play("shoot",0.4,1,true)
 		return
 	if cooldown<=0 and clear_sight(target) and (distance<2.7 or role=="guard" and distance<16):
 		windup = 0.8 if boss else 1.0
 		cooldown = 2.1 if boss else 2.7
-		human.play("aim" if role=="guard" and distance>=3 else "combo",windup,1.5)
+		human.play("aim" if role=="guard" and distance>=3 else "hook",windup,0.5,true)
 		game.world.ring(position,1.2,Color(1,0.2,0.06),windup)
 	if boss and cooldown<=0 and distance>=3 and distance<20:
 		cooldown = 3.5
@@ -272,7 +293,7 @@ func damage(amount: float) -> void:
 	hp -= amount
 	if enemy:
 		active=true
-		human.play("hit",0.25,1.4)
+		human.play("hit",0.25,1.4,true)
 		game.world.burst(position+Vector3.UP,Color(0.5,0.015,0.025) if game.gore else Color(0.5,0.7,1),15)
 	else:
 		game.hurt_flash = 0.35

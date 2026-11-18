@@ -3,9 +3,10 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bamn21p6551ev"
-path="res://.godot/imported/voss_gen_ajg84w_n.png-a26d84dadbd035dc25d28ac3d6e27610.ctex"
+path.s3tc="res://.godot/imported/voss_gen_ajg84w_n.png-a26d84dadbd035dc25d28ac3d6e27610.s3tc.ctex"
 metadata={
-"vram_texture": false
+"imported_formats": ["s3tc_bptc"],
+"vram_texture": true
 }
 generator_parameters={
 "md5": "2e620cec5d3a5ab6cabc965a6b34bb5a"
@@ -14,11 +15,11 @@ generator_parameters={
 [deps]
 
 source_file="res://assets/cast/voss_gen_ajg84w_n.png"
-dest_files=["res://.godot/imported/voss_gen_ajg84w_n.png-a26d84dadbd035dc25d28ac3d6e27610.ctex"]
+dest_files=["res://.godot/imported/voss_gen_ajg84w_n.png-a26d84dadbd035dc25d28ac3d6e27610.s3tc.ctex"]
 
 [params]
 
-compress/mode=0
+compress/mode=2
 compress/high_quality=false
 compress/lossy_quality=0.7
 compress/uastc_level=0
@@ -39,5 +40,5 @@ process/premult_alpha=false
 process/normal_map_invert_y=false
 process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
-process/size_limit=0
+process/size_limit=2048
 detect_3d/compress_to=1

@@ -3,9 +3,10 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://c64htxku7f5rt"
-path="res://.godot/imported/guard_gen_sd5a9b.png-aafe9004c13b5969b0113e64d0f2e8e9.ctex"
+path.s3tc="res://.godot/imported/guard_gen_sd5a9b.png-aafe9004c13b5969b0113e64d0f2e8e9.s3tc.ctex"
 metadata={
-"vram_texture": false
+"imported_formats": ["s3tc_bptc"],
+"vram_texture": true
 }
 generator_parameters={
 "md5": "775441e2741fdfec1e52f77ce7a7a1da"
@@ -14,11 +15,11 @@ generator_parameters={
 [deps]
 
 source_file="res://assets/cast/guard_gen_sd5a9b.png"
-dest_files=["res://.godot/imported/guard_gen_sd5a9b.png-aafe9004c13b5969b0113e64d0f2e8e9.ctex"]
+dest_files=["res://.godot/imported/guard_gen_sd5a9b.png-aafe9004c13b5969b0113e64d0f2e8e9.s3tc.ctex"]
 
 [params]
 
-compress/mode=0
+compress/mode=2
 compress/high_quality=false
 compress/lossy_quality=0.7
 compress/uastc_level=0
@@ -39,5 +40,5 @@ process/premult_alpha=false
 process/normal_map_invert_y=false
 process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
-process/size_limit=0
+process/size_limit=1024
 detect_3d/compress_to=1

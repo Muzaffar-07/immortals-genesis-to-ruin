@@ -2,11 +2,11 @@
   "name": "ena",
   "seed": 1,
   "gender": 0,
-  "age": 0.53,
-  "muscle": 0.65,
+  "age": 0.54,
+  "muscle": 0.62,
   "weight": 0.35,
-  "height": 0.56,
-  "proportions": 0.88,
+  "height": 0.57,
+  "proportions": 0.8,
   "african": 0.05,
   "asian": 0.85,
   "caucasian": 0.1,
@@ -14,12 +14,12 @@
   "breastFirmness": 0.5,
   "modifiers": {},
   "skin": "auto",
-  "skinTint": "#e4edf5",
-  "eyes": "ice",
+  "skinTint": "#ffffff",
+  "eyes": "grey",
   "eyebrows": "eyebrow012",
   "eyelashes": "eyelashes03",
   "hair": "ponytail01",
-  "hairTint": "#c8d9e5",
+  "hairTint": "#665c51",
   "hairColor": "#2a1e16",
   "facialHair": "none",
   "beardColor": "#241a13",
@@ -33,14 +33,24 @@
   "bottom": "techwear_pants",
   "underwear": true,
   "accessories": [
-    "neon_accents",
     "utility_belt"
   ],
-  "garmentStyles": {},
+  "garmentStyles": {
+    "techwear_jacket": {
+      "pattern": "workwear",
+      "color": "#303c45",
+      "color2": "#69747a"
+    },
+    "techwear_pants": {
+      "pattern": "workwear",
+      "color": "#262e34",
+      "color2": "#404b51"
+    }
+  },
   "shoes": "combat_boots",
   "hat": "none",
   "outfitTint": "#ffffff",
-  "detail": "medium",
+  "detail": "high",
   "rig": "game",
   "faceBones": true,
   "restPose": "A",
@@ -56,8 +66,8 @@
     "variant": "classic"
   },
   "expression": "neutral",
-  "faceShapes": false,
-  "speechShapes": false,
+  "faceShapes": true,
+  "speechShapes": true,
   "teeth": "teeth_base",
   "tongue": true
 }

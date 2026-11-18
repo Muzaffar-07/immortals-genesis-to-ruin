@@ -3,7 +3,7 @@
   "seed": 1,
   "gender": 1,
   "age": 0.56,
-  "muscle": 0.88,
+  "muscle": 0.82,
   "weight": 0.55,
   "height": 0.66,
   "proportions": 0.7,
@@ -14,12 +14,12 @@
   "breastFirmness": 0.5,
   "modifiers": {},
   "skin": "auto",
-  "skinTint": "#e7ebf3",
-  "eyes": "ice",
+  "skinTint": "#ffffff",
+  "eyes": "grey",
   "eyebrows": "eyebrow003",
   "eyelashes": "eyelashes01",
   "hair": "short02",
-  "hairTint": "#ffffff",
+  "hairTint": "#4b382a",
   "hairColor": "#2a1e16",
   "facialHair": "stubble",
   "beardColor": "#241a13",
@@ -38,18 +38,18 @@
   ],
   "garmentStyles": {
     "fatigue_shirt": {
-      "pattern": "solid",
-      "color": "#243640"
+      "pattern": "workwear",
+      "color": "#334047"
     },
     "fatigue_pants": {
-      "pattern": "solid",
-      "color": "#18242b"
+      "pattern": "workwear",
+      "color": "#242e32"
     }
   },
   "shoes": "combat_boots",
   "hat": "none",
   "outfitTint": "#ffffff",
-  "detail": "medium",
+  "detail": "high",
   "rig": "game",
   "faceBones": true,
   "restPose": "A",
@@ -65,8 +65,8 @@
     "variant": "classic"
   },
   "expression": "neutral",
-  "faceShapes": false,
-  "speechShapes": false,
+  "faceShapes": true,
+  "speechShapes": true,
   "teeth": "teeth_base",
   "tongue": true
 }

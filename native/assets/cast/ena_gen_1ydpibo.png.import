@@ -3,9 +3,10 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://wcs4ji5u3ax5"
-path="res://.godot/imported/ena_gen_1ydpibo.png-f77cdb6c6bddbcd8b8f61a643285050b.ctex"
+path.s3tc="res://.godot/imported/ena_gen_1ydpibo.png-f77cdb6c6bddbcd8b8f61a643285050b.s3tc.ctex"
 metadata={
-"vram_texture": false
+"imported_formats": ["s3tc_bptc"],
+"vram_texture": true
 }
 generator_parameters={
 "md5": "7528afd41cdbdd9e85e9e3efb3ca3f16"
@@ -14,11 +15,11 @@ generator_parameters={
 [deps]
 
 source_file="res://assets/cast/ena_gen_1ydpibo.png"
-dest_files=["res://.godot/imported/ena_gen_1ydpibo.png-f77cdb6c6bddbcd8b8f61a643285050b.ctex"]
+dest_files=["res://.godot/imported/ena_gen_1ydpibo.png-f77cdb6c6bddbcd8b8f61a643285050b.s3tc.ctex"]
 
 [params]
 
-compress/mode=0
+compress/mode=2
 compress/high_quality=false
 compress/lossy_quality=0.7
 compress/uastc_level=0
@@ -39,5 +40,5 @@ process/premult_alpha=false
 process/normal_map_invert_y=false
 process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
-process/size_limit=0
+process/size_limit=2048
 detect_3d/compress_to=1

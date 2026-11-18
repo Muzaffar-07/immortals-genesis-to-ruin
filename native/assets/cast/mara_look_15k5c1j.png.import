@@ -3,9 +3,10 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://c8upvdrs067j8"
-path="res://.godot/imported/mara_look_15k5c1j.png-376e21453be7b5375e5672309faf637b.ctex"
+path.s3tc="res://.godot/imported/mara_look_15k5c1j.png-376e21453be7b5375e5672309faf637b.s3tc.ctex"
 metadata={
-"vram_texture": false
+"imported_formats": ["s3tc_bptc"],
+"vram_texture": true
 }
 generator_parameters={
 "md5": "99dd8789bf0a9916500219f43351cb39"
@@ -14,11 +15,11 @@ generator_parameters={
 [deps]
 
 source_file="res://assets/cast/mara_look_15k5c1j.png"
-dest_files=["res://.godot/imported/mara_look_15k5c1j.png-376e21453be7b5375e5672309faf637b.ctex"]
+dest_files=["res://.godot/imported/mara_look_15k5c1j.png-376e21453be7b5375e5672309faf637b.s3tc.ctex"]
 
 [params]
 
-compress/mode=0
+compress/mode=2
 compress/high_quality=false
 compress/lossy_quality=0.7
 compress/uastc_level=0
@@ -39,5 +40,5 @@ process/premult_alpha=false
 process/normal_map_invert_y=false
 process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
-process/size_limit=0
+process/size_limit=2048
 detect_3d/compress_to=1

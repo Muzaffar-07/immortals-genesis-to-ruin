@@ -3,9 +3,10 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bhj7jeu1b3kkm"
-path="res://.godot/imported/ena_teeth_teeth_base.png-39c86c5205f86e94449215b1a82dbbab.ctex"
+path.s3tc="res://.godot/imported/ena_teeth_teeth_base.png-39c86c5205f86e94449215b1a82dbbab.s3tc.ctex"
 metadata={
-"vram_texture": false
+"imported_formats": ["s3tc_bptc"],
+"vram_texture": true
 }
 generator_parameters={
 "md5": "3eacd834a8385fe46b812dceb5bcca97"
@@ -14,11 +15,11 @@ generator_parameters={
 [deps]
 
 source_file="res://assets/cast/ena_teeth_teeth_base.png"
-dest_files=["res://.godot/imported/ena_teeth_teeth_base.png-39c86c5205f86e94449215b1a82dbbab.ctex"]
+dest_files=["res://.godot/imported/ena_teeth_teeth_base.png-39c86c5205f86e94449215b1a82dbbab.s3tc.ctex"]
 
 [params]
 
-compress/mode=0
+compress/mode=2
 compress/high_quality=false
 compress/lossy_quality=0.7
 compress/uastc_level=0
@@ -39,5 +40,5 @@ process/premult_alpha=false
 process/normal_map_invert_y=false
 process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
-process/size_limit=0
+process/size_limit=2048
 detect_3d/compress_to=1

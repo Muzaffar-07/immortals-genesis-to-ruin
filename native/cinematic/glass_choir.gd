@@ -29,11 +29,13 @@ var lift_point := Vector3.ZERO
 var travel_overlay: ColorRect
 var dialogue_camera: Camera3D
 var dialogue_actor: HumanAvatar
+var voices: VoicePerformance
+var director: MovieDirector
 
 func _ready() -> void:
 	Engine.max_fps = 60
 	setup_inputs()
-	for pair in [["blink",KEY_Q],["gravity",KEY_R],["jump",KEY_C],["lock",KEY_TAB]]:
+	for pair in [["blink",KEY_Q],["gravity",KEY_R],["jump",KEY_C],["lock",KEY_TAB],["heavy",KEY_V]]:
 		InputMap.add_action(pair[0])
 		var key := InputEventKey.new()
 		key.physical_keycode = pair[1]
@@ -46,15 +48,23 @@ func _ready() -> void:
 	add_child(sound)
 	ui = CanvasLayer.new()
 	add_child(ui)
+	voices=VoicePerformance.new()
+	add_child(voices)
+	voices.setup(self)
+	director=MovieDirector.new()
+	add_child(director)
+	director.setup(self)
 	test_mode = "--cinematic-test" in OS.get_cmdline_user_args()
 	capture_mode = "--cinematic-capture" in OS.get_cmdline_user_args()
 	save_enabled = not test_mode and not capture_mode
 	load_story()
+	if capture_mode: female=true
 	show_menu()
 	if test_mode: run_cinematic_test.call_deferred()
 	if capture_mode: capture_cinematic.call_deferred()
 
 func clear_scene() -> void:
+	if is_instance_valid(director): director.cancel()
 	for actor in cast_nodes:
 		if is_instance_valid(actor): actor.queue_free()
 	cast_nodes.clear()
@@ -85,8 +95,8 @@ func show_menu() -> void:
 	menu_camera.look_at(hero.position+Vector3(-0.85,1.05,0))
 	menu_camera.fov = 48
 	menu_camera.current = true
-	world.light(menu_root,hero.position+Vector3(1,2,2),Color(0.65,0.8,1),0.85,6)
-	world.light(menu_root,hero.position+Vector3(-2,2,-1),Color(1,0.36,0.16),1.0,5)
+	world.light(menu_root,hero.position+Vector3(1,2,2),Color(0.95,0.9,0.82),1.0,6)
+	world.light(menu_root,hero.position+Vector3(-2,2,-1),Color(0.5,0.65,0.8),0.65,5)
 	overlay = full_control()
 	var shade := ColorRect.new()
 	shade.color = Color(0.01,0.02,0.03,0.87)
@@ -144,7 +154,8 @@ func start_mission(index: int) -> void:
 	music.volume_db = -23
 	music.play()
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE if test_mode or capture_mode else Input.MOUSE_MODE_CAPTURED
-	say("MARA VALE", "If you can hear this, don't trust the voice on the intercom. It sounds like a man. It isn't.",8)
+	if index==0 and not test_mode and not capture_mode:
+		await director.play_scene("arrival")
 
 func create_hud() -> void:
 	hud = full_control()
@@ -223,7 +234,6 @@ func set_phase(value: int) -> void:
 		var voss := spawn_guard(target_point+Vector3(0,0,-3),true)
 		voss.max_hp = 550 if not broadcast else 750
 		voss.hp = voss.max_hp
-		say("DIRECTOR VOSS","You think you are the original? I remember your first sunrise too.",7)
 	if phase==6: say("MARA VALE","The doors are open. Get out before the next copy wakes up.",6)
 
 func spawn_guard(pos: Vector3, leader: bool = false) -> Combatant:
@@ -245,6 +255,11 @@ func _process(delta: float) -> void:
 	hurt_flash=maxf(0,hurt_flash-delta)
 	toast_time=maxf(0,toast_time-delta)
 	subtitle_left=maxf(0,subtitle_left-delta)
+	if phase==5 and not arena_triggered and player.position.distance_to(target_point)<18:
+		arena_triggered=true
+		if not test_mode and not capture_mode:
+			director.play_scene("voss")
+			return
 	if phase==3 and not lift_pending and enemies.is_empty():
 		say("MARA VALE","That squad had my clearance code. Voss knew I would help you.",6)
 		set_phase(4)
@@ -263,7 +278,7 @@ func update_hud() -> void:
 	subtitle.visible=subtitle_left>0
 	damage_rect.color.a=hurt_flash*0.45
 	var hero := player as Combatant
-	power_text.text="Q  BLINK %s    R  GRAVITY %s\nF  TIME FRACTURE %s\nLMB Combo   RMB Parry   SPACE Evade   TAB Lock" % ["READY" if hero.blink_cd<=0 else "%.1fs" % hero.blink_cd,"READY" if hero.gravity_cd<=0 else "%.1fs" % hero.gravity_cd,"ACTIVE" if slow_time>0 else "READY" if hero.pulse>=100 else "%d%%" % hero.pulse]
+	power_text.text="Q  BLINK %s    R  GRAVITY %s\nF  TIME FRACTURE %s\nLMB Combo   V Kick   RMB Parry   SPACE Evade" % ["READY" if hero.blink_cd<=0 else "%.1fs" % hero.blink_cd,"READY" if hero.gravity_cd<=0 else "%.1fs" % hero.gravity_cd,"ACTIVE" if slow_time>0 else "READY" if hero.pulse>=100 else "%d%%" % hero.pulse]
 	combo_text.text = "%d HITS\n%s" % [streak,"RELENTLESS" if streak>=8 else "RESONANCE"] if streak>1 else ""
 	boss_text.text=""
 	for enemy in enemies:
@@ -290,17 +305,21 @@ func interact() -> void:
 	match phase:
 		0:
 			journal.append("Recorder: the screams repeat every 41 seconds. The victims are being reconstructed.")
-			dialogue("AFTERIMAGE / RECORDER", "MARA: I watched patient 09 die three times. Each time he remembered the last.\n\nThe last voice on the tape is yours. You have never been here.",["Follow the signal"],[func(): set_phase(1)])
+			dialogue("AFTERIMAGE / RECORDER", voices.lines.mara_recorder.text+"\n\nThe last voice on the tape is yours. You have never been here.",["Follow the signal"],[func(): set_phase(1)])
 		1:
 			journal.append("Security junction: every guard has the same date of birth.")
 			world.shockwave(target_point,5,Color(0.2,0.6,1))
 			say("DIRECTOR VOSS","Security is a kindness. Outside these walls, your species is already extinct.",6)
 			set_phase(2)
 		2:
-			dialogue("DR. MARA VALE", "I built the first resurrection chamber. Voss made me keep the memories.\nI can shut down his reinforcements, but you have to let me stay at the console.",["Trust her. Save whoever is left.","No more experiments. Come with me."],[func(): trust_mara=true; witness_done(),func(): trust_mara=false; witness_done()])
+			meet_witness()
 		4:
-			dialogue("ARCHIVE / THE KING'S LIE", "Voss is not extending life. He is replacing people with copies that obey him.\nBroadcasting exposes Blackwater, but keeps his backup reactor online.\nDestroying the archive weakens him and erases the proof.",["Broadcast the evidence.","Destroy the archive. End the copies."],[func(): broadcast=true; archive_done(),func(): broadcast=false; archive_done()])
+			dialogue("ARCHIVE / THE KING'S LIE", voices.lines.mara_archive.text,["Broadcast the evidence.","Destroy the archive. End the copies."],[func(): broadcast=true; archive_done(),func(): broadcast=false; archive_done()])
 		6: win()
+
+func meet_witness() -> void:
+	if not test_mode and not capture_mode: await director.play_scene("witness")
+	dialogue("DR. MARA VALE", voices.lines.mara_witness.text,["Trust her. Save whoever is left.","No more experiments. Come with me."],[func(): trust_mara=true; witness_done(),func(): trust_mara=false; witness_done()])
 
 func use_lift() -> void:
 	playing=false
@@ -366,22 +385,40 @@ func dialogue(who: String, text: String, choices: Array, actions: Array) -> void
 		dialogue_actor.rotation.y=0.25
 		dialogue_camera=Camera3D.new()
 		world.add_child(dialogue_camera)
-		dialogue_camera.position=dialogue_actor.global_position+Vector3(0.7,1.6,2.3)
-		dialogue_camera.look_at(dialogue_actor.global_position+Vector3(0,1.3,0))
-		dialogue_camera.fov=45
+		var focus := dialogue_actor.face_position()-Vector3.UP*0.3
+		dialogue_camera.position=focus+Vector3(0.45,0.08,1.8)
+		dialogue_camera.look_at(focus)
+		dialogue_camera.fov=38
 		dialogue_camera.current=true
-		world.light(dialogue_actor,Vector3(0,1.8,1),Color(0.7,0.85,1),0.8,3)
+		world.light(dialogue_actor,Vector3(0,1.8,1),Color(0.9,0.94,1),0.45,3)
+		var lens := CameraAttributesPractical.new()
+		lens.dof_blur_far_enabled=quality>0
+		lens.dof_blur_far_distance=3.1
+		lens.dof_blur_far_transition=3
+		lens.dof_blur_amount=0.18
+		dialogue_camera.attributes=lens
+	voices.play_line("mara_witness" if phase==2 else "mara_recorder" if phase==0 else "mara_archive",dialogue_actor)
 	for i in choices.size():
 		var action: Callable=actions[i]
-		button(stack,choices[i],func(): dialog_active=false; resume_game(); action.call(),1500)
+		button(stack,choices[i],func(): perform_choice(action,i),1500)
+
+func perform_choice(action: Callable, index: int) -> void:
+	var choice := ("trust" if index==0 else "evacuate") if phase==2 else ("broadcast" if index==0 else "destroy") if phase==4 else ""
+	dialog_active=false
+	voices.stop()
+	resume_game()
+	if choice!="" and not test_mode and not capture_mode: await director.play_scene("choice",choice)
+	action.call()
 
 func resume_game() -> void:
+	voices.player.stream_paused=false
 	if is_instance_valid(hud): hud.visible=true
 	if is_instance_valid(mission_marker): mission_marker.visible=true
 	player.avatar.visible=true
 	if is_instance_valid(dialogue_camera): dialogue_camera.queue_free()
 	if is_instance_valid(dialogue_actor):
 		dialogue_actor.animation.process_mode=Node.PROCESS_MODE_INHERIT
+		dialogue_actor.action_left=0
 		dialogue_actor.play("idle")
 	dialogue_camera=null; dialogue_actor=null
 	player.camera.current=true
@@ -390,6 +427,8 @@ func resume_game() -> void:
 func say(who: String, text: String, duration: float = 6) -> void:
 	subtitle.text=who.to_upper()+"\n"+text
 	subtitle_left=duration
+	var id := voices.find_line(text)
+	if id!="": subtitle_left=maxf(duration,voices.play_line(id)+0.25)
 
 func register_hit(_combo: int) -> void:
 	streak += 1
@@ -402,6 +441,7 @@ func enemy_died(enemy: Fighter) -> void:
 	sound.play_at("impactPunch_heavy",enemy.position,-8,0.75)
 
 func pause_game(_journal: bool = false) -> void:
+	voices.player.stream_paused=true
 	playing=false; paused=true
 	world.process_mode=Node.PROCESS_MODE_DISABLED
 	Input.mouse_mode=Input.MOUSE_MODE_VISIBLE
@@ -412,10 +452,14 @@ func pause_game(_journal: bool = false) -> void:
 	button(stack,"RETURN TO TITLE",show_menu)
 
 func _unhandled_input(event: InputEvent) -> void:
+	if director.active:
+		if event.is_action_pressed("dodge") or event.is_action_pressed("pause"): director.skip()
+		return
 	if dialog_active: return
 	super._unhandled_input(event)
 
 func fail(title: String, reason: String) -> void:
+	voices.stop()
 	playing=false
 	world.process_mode=Node.PROCESS_MODE_DISABLED
 	Input.mouse_mode=Input.MOUSE_MODE_VISIBLE
@@ -424,6 +468,7 @@ func fail(title: String, reason: String) -> void:
 	button(stack,"RETURN TO TITLE",show_menu)
 
 func win() -> void:
+	if not test_mode and not capture_mode: await director.play_scene("ending")
 	playing=false
 	world.process_mode=Node.PROCESS_MODE_DISABLED
 	Input.mouse_mode=Input.MOUSE_MODE_VISIBLE
@@ -441,8 +486,9 @@ func show_settings() -> void:
 	var stack := modal("GRAPHICS & CONTROLS")
 	button(stack,"QUALITY / "+["PERFORMANCE","FULL HD","4K SUPERSAMPLING"][quality],func(): quality=(quality+1)%3; apply_quality(); show_settings())
 	button(stack,"BLOOD EFFECTS / "+("ON" if gore else "OFF"),func(): gore=not gore; show_settings())
+	button(stack,"VOICES / "+("ON" if voices.enabled else "OFF"),func(): voices.enabled=not voices.enabled; show_settings())
 	button(stack,"FULLSCREEN",func(): DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN))
-	label(stack,"WASD Move  •  MOUSE Look  •  SHIFT Sprint  •  C Jump\nLMB Combo  •  RMB Block / tap as a strike lands to parry\nSPACE Evade  •  TAB Lock target  •  Q Blink strike\nR Gravity pull  •  F Time fracture  •  E Interact\nM Evidence journal  •  ESC Pause\n\n4K renders at 3840 × 2160 internally. Use Full HD for this PC's GPU.",24)
+	label(stack,"WASD Move  •  MOUSE Look  •  SHIFT Sprint  •  C Jump\nLMB Jab / cross / hook  •  V Heavy kick\nRMB Block / tap as a strike lands to parry\nSPACE Evade  •  TAB Lock target  •  Q Blink strike\nR Gravity pull  •  F Time fracture  •  E Interact\nM Evidence journal  •  ESC Pause / skip scene\n\n4K renders at 3840 × 2160 internally. Full HD is recommended for this GPU.",23)
 	button(stack,"BACK",show_menu)
 
 func apply_quality() -> void:
@@ -454,7 +500,7 @@ func apply_quality() -> void:
 
 func show_credits() -> void:
 	var stack := modal("BUILT IN THE OPEN")
-	label(stack,"Concept & world: Muzaffar Ali Mohammad\nGodot Engine / MIT\nIndustrial environment: Godot TPS Demo\nJuan Linietsky & Fernando Miguel Calabró / CC BY 3.0\nMusic: Christian Fernando Perucchi / CC BY 3.0\nHuman characters: Ara 3D Gen + MakeHuman / CC0 assets\nSound effects: Kenney / CC0\nFull notices and reproducible character parameters ship with the source.",25)
+	label(stack,"Concept & world: Muzaffar Ali Mohammad\nGodot Engine / MIT\nIndustrial environment: Godot TPS Demo\nJuan Linietsky & Fernando Miguel Calabró / CC BY 3.0\nMusic: Christian Fernando Perucchi / CC BY 3.0\nHuman characters: Ara 3D Gen + MakeHuman / CC0 assets\nSound effects: Kenney / CC0\nGenerated dialogue: Kokoro-82M / Apache 2.0\nFull notices and reproducible character parameters ship with the source.",25)
 	button(stack,"BACK",show_menu)
 
 func save_story() -> void:
@@ -476,14 +522,29 @@ func load_story() -> void:
 
 func run_cinematic_test() -> void:
 	var errors: Array[String]=[]
+	if voices.lines.size()!=27: errors.append("Voice manifest missing clips")
+	for id in voices.lines:
+		if not ResourceLoader.exists("res://assets/voice/"+id+".ogg"): errors.append("Missing voice "+id)
 	for heroine in [true,false]:
 		female=heroine
 		await start_mission(0)
 		await get_tree().create_timer(0.5).timeout
 		var hero := player as Combatant
-		for clip in ["idle","run","combo","kick","roundhouse","block","hit"]:
+		for clip in ["idle","run","jab","cross","hook","kick","roundhouse","block","hit","evade_left","evade_right"]:
 			if not hero.human.clips.has(clip): errors.append("Missing hero animation "+clip)
 		print("CAST ",hero.role," clips ",hero.human.clips.keys())
+		if hero.human.face_meshes.is_empty(): errors.append("Facial shapes absent")
+		director.fast=true
+		await director.play_scene("arrival")
+		if not playing or director.active or not hero.camera.current: errors.append("Arrival restoration")
+		await director.play_scene("witness")
+		await director.play_scene("choice","trust" if heroine else "evacuate")
+		await director.play_scene("choice","broadcast" if heroine else "destroy")
+		voices.play_line("ena_question" if heroine else "aro_question",hero.human)
+		await get_tree().create_timer(0.5).timeout
+		if hero.human.speech_strength<=0: errors.append("Speech facial motion absent")
+		voices.stop()
+		if hero.human.speech_strength!=0: errors.append("Speech reset failed")
 		# Mission interactions use the same UI signals as real play.
 		player.position=target_point
 		interact()
@@ -509,6 +570,10 @@ func run_cinematic_test() -> void:
 		hero.cooldown=0; hero.strike()
 		if hero.combo!=1: errors.append("Combo did not chain")
 		await get_tree().create_timer(0.4).timeout
+		hero.cooldown=0; hero.stamina=100
+		hero.strike(true)
+		if hero.stamina!=80 or hero.human.animation.current_animation!=hero.human.clips.kick: errors.append("Heavy kick failed")
+		await get_tree().create_timer(0.85).timeout
 		hero.blocking=true; hero.parry_left=0.2; hero.invulnerable=0
 		var prior_hp: float=hero.hp
 		hero.receive_attack(20,foe)
@@ -548,6 +613,7 @@ func run_cinematic_test() -> void:
 		if phase!=2: errors.append("Security progression")
 		player.position=target_point
 		interact()
+		if phase==2: await director_test_witness(errors)
 		choose_test(0 if heroine else 1)
 		if phase!=3 or trust_mara!=heroine: errors.append("Witness choice")
 		await use_lift()
@@ -562,6 +628,7 @@ func run_cinematic_test() -> void:
 		if enemies.size()!=1: errors.append("Boss missing")
 		else:
 			var boss_actor: Combatant=enemies[0]
+			await director.play_scene("voss")
 			if boss_actor.max_hp!=(750 if heroine else 550): errors.append("Boss choice consequence")
 			boss_actor.damage(boss_actor.max_hp*0.4)
 			boss_actor.ai(0)
@@ -574,6 +641,7 @@ func run_cinematic_test() -> void:
 			for enemy in enemies.duplicate(): enemy.damage(10000)
 		await get_tree().create_timer(0.1).timeout
 		if phase!=6: errors.append("Boss completion")
+		await director.play_scene("ending")
 		player.position=target_point
 		interact()
 		if playing: errors.append("Ending not reached")
@@ -583,10 +651,22 @@ func run_cinematic_test() -> void:
 	pause_game()
 	if playing or world.process_mode!=Node.PROCESS_MODE_DISABLED: errors.append("Pause failed")
 	resume_game()
+	if voices.player.stream_paused: errors.append("Voice resume failed")
 	player.damage(10000)
 	if playing: errors.append("Death failed")
 	await start_mission(checkpoint_phase)
 	if not playing or phase!=3 or player.hp<=0: errors.append("Checkpoint retry failed")
+	director.fast=false
+	director.play_scene("arrival")
+	await get_tree().process_frame
+	director.skip()
+	for frame in 8: await get_tree().process_frame
+	if director.active or not playing: errors.append("Cutscene skip failed")
+	director.play_scene("arrival")
+	await get_tree().process_frame
+	director.cancel(true)
+	for frame in 8: await get_tree().process_frame
+	if director.active or not playing: errors.append("Cutscene cancellation failed")
 	playing=false
 	for message in errors: push_error("TEST: "+message)
 	print("CINEMATIC TEST ","PASS" if errors.is_empty() else "FAIL", " / ", errors.size(), " errors")
@@ -594,6 +674,11 @@ func run_cinematic_test() -> void:
 	await get_tree().process_frame
 	await get_tree().process_frame
 	get_tree().quit(0 if errors.is_empty() else 1)
+
+func director_test_witness(errors: Array[String]) -> void:
+	if voices.current!="mara_witness": errors.append("Witness voice missing")
+	# Keep the existing choice panel while checking the directed reply separately.
+	voices.stop()
 
 func choose_test(index: int) -> void:
 	if not is_instance_valid(overlay): return
@@ -608,6 +693,12 @@ func capture_cinematic() -> void:
 	await get_tree().create_timer(4).timeout
 	await RenderingServer.frame_post_draw
 	get_viewport().get_texture().get_image().save_png("res://test-output/choir-game.png")
+	director.play_scene("choice","trust")
+	await get_tree().create_timer(1.2).timeout
+	await RenderingServer.frame_post_draw
+	get_viewport().get_texture().get_image().save_png("res://test-output/choir-closeup.png")
+	director.skip()
+	await get_tree().create_timer(0.2).timeout
 	await start_mission(1)
 	await use_lift()
 	await get_tree().create_timer(1).timeout
@@ -623,4 +714,17 @@ func capture_cinematic() -> void:
 	await get_tree().create_timer(2).timeout
 	await RenderingServer.frame_post_draw
 	get_viewport().get_texture().get_image().save_png("res://test-output/choir-dialogue.png")
+	voices.stop()
+	resume_game()
+	for enemy in enemies.duplicate(): enemy.damage(10000)
+	set_phase(5)
+	player.position=target_point+Vector3(0,0,5)
+	director.play_scene("voss")
+	await get_tree().create_timer(1.2).timeout
+	await RenderingServer.frame_post_draw
+	get_viewport().get_texture().get_image().save_png("res://test-output/choir-voss.png")
+	director.skip()
+	for frame in 8: await get_tree().process_frame
+	clear_scene()
+	for frame in 4: await get_tree().process_frame
 	get_tree().quit()

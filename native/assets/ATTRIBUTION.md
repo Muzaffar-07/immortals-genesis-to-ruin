@@ -39,7 +39,22 @@ No account or network connection is needed to play the packaged game.
   or photographs were supplied. The old Higgsfield characters below belong to the
   retained legacy prototype, not the new mission.
 
-## Powered by Poly Haven
+## The Glass Choir / generated dialogue
+
+- 27 speech clips in `voice/` are generated for this fictional cast using
+  https://huggingface.co/hexgrad/Kokoro-82M (model license: Apache 2.0).
+- Runtime used to generate the audio: https://github.com/thewh1teagle/kokoro-onnx,
+  version 0.4.7, MIT. Model/voice bank: upstream `model-files-v1.1` release.
+- Built-in voices: Ena `af_heart`, Aro `am_michael`, Mara `bf_emma`, Voss `bm_george`.
+  These are synthetic voices, not recordings or clones of the game's actors.
+- Source dialogue and generation settings: `tools/generate-dialogue.py`.
+  `voice/lines.json` records text, duration, amplitude envelopes and file hashes.
+- Audio normalized and encoded as 24 kHz Ogg Vorbis. Only generated audio ships;
+  ONNX weights, Python dependencies and eSpeak binaries are development tools.
+- Preserve `licenses/KOKORO-ONNX-LICENSE.txt` and `licenses/KOKORO-MODEL-LICENSE.txt`.
+  Facial speech animation is amplitude driven; no performance capture was used.
+
+## Powered by Poly Haven assets
 
 - `terrain/ground_*`: **forest_ground_04**, 2K diffuse, OpenGL normal and roughness maps.
 - `environment/boulder_01`: **boulder_01**, 1K glTF photogrammetry model and PBR textures.

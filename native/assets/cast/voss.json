@@ -56,7 +56,7 @@
   "shoes": "oxfords",
   "hat": "none",
   "outfitTint": "#ffffff",
-  "detail": "medium",
+  "detail": "high",
   "rig": "game",
   "faceBones": true,
   "restPose": "A",
@@ -72,8 +72,8 @@
     "variant": "classic"
   },
   "expression": "determined",
-  "faceShapes": false,
-  "speechShapes": false,
+  "faceShapes": true,
+  "speechShapes": true,
   "teeth": "teeth_base",
   "tongue": true
 }

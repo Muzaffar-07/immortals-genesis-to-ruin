@@ -7,7 +7,7 @@ slice, not a finished AAA game or a PlayStation release.
 
 ## Play
 
-[Download the Windows build](https://github.com/Muzaffar-07/immortals-genesis-to-ruin/releases/tag/v0.4.0-glass-choir).
+[Download the Windows build](https://github.com/Muzaffar-07/immortals-genesis-to-ruin/releases/tag/v0.5.0-cinematic).
 Extract the entire ZIP, then run `Immortals.exe`. Keep `Immortals.pck` beside it.
 No installation, login or internet connection is needed. The executable is unsigned.
 
@@ -21,7 +21,8 @@ at 3840×2160 and scales it to the viewport. This does not make every source tex
 |---|---|
 | WASD / mouse | Move / look |
 | Shift / C | Sprint / jump |
-| Left click | Three-step combo: punches, front kick, roundhouse |
+| Left click | Jab, cross, hook; buffered input between strikes |
+| V | Heavy front kick (20 stamina) |
 | Right click | Block; press within 0.2 s of impact for a perfect parry |
 | Space | Evade with a brief invulnerability window |
 | Tab | Lock nearest visible target |
@@ -30,6 +31,7 @@ at 3840×2160 and scales it to the viewport. This does not make every source tex
 | F | Time fracture: slow enemies for 6 s when resonance is full |
 | E | Investigate, converse, use freight lift or extract |
 | M / Escape | Evidence journal / pause |
+| Space / Escape during a cutscene | Skip scene |
 
 Watch orange windups. Blocks consume stamina; perfect parries stagger the attacker.
 Successful strikes build resonance. Kills restore some vitality. Blood effects can
@@ -62,6 +64,8 @@ godot --path native
 The automated integration check covers both heroes, combat animations, timed combo
 damage, block/parry/evade, gravity and blink cooldowns, time fracture, dialogue button
 choices, ambush and boss consequences, both endings, pause, death and checkpoint retry.
+It also checks all 27 voice assets, facial speech activation, heavy kicks and cinematic
+camera restoration after completion, skipping and cancellation.
 Story tests assist combat and relocate the player between objectives; they do not
 establish difficulty balance. `--cinematic-capture` renders title/gameplay/combat
 screenshots into `test-output/`. Test modes do not overwrite player saves.
@@ -69,6 +73,9 @@ screenshots into `test-output/`. Test modes do not overwrite player saves.
 `tools/build-native.ps1` exports Windows, packages the executable and data, copies
 credits/licenses and prints a SHA256 checksum. Matching Godot export templates are
 required. Build output and tools/downloads are ignored by git.
+After regenerating characters, import once to extract textures, run
+`python tools/optimize-cast-imports.py`, then import again. This preserves the GPU
+compression and texture-size limits used by the Windows build.
 
 The former six-arena prototype remains accessible through `main.tscn` for reference.
 The browser prototype is a separate game in `public/`.
@@ -80,7 +87,14 @@ notice in `licenses/GODOT-TPS-LICENSE.md`. Characters use the MIT Ara 3D Gen pip
 and CC0 MakeHuman data. Motion-capture locomotion retains CMU's terms and credit.
 Kenney sound effects are CC0. See `assets/ATTRIBUTION.md` and `licenses/`.
 
+Version 0.5 adds 27 locally generated dialogue recordings, skippable camera-directed
+scenes, audio-reactive mouth movement and blinking, high-detail principal characters,
+subsurface skin shading, and distinct jab/cross/hook, kick and evade animations.
+Voice generation uses Kokoro-82M (Apache 2.0) through kokoro-onnx (MIT); only the
+finished audio is required at runtime. `tools/generate-dialogue.py` reproduces the clips.
+
 This build has one mission with linked stages, limited enemy tactics and keyframed
-combat animation. Conversations are text/subtitles, not recorded voice acting.
+combat animation. Voices are synthetic performances; mouth movement follows audio
+amplitude rather than precise phonemes.
 There is no multiplayer, controller support, facial performance capture, destructible
 world, dismemberment system, console certification or guaranteed 4K frame rate.
